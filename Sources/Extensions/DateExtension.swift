@@ -31,7 +31,12 @@ extension Date {
         dateformatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         dateformatter.timeZone = TimeZone(secondsFromGMT: 0)
 
-        guard let date = dateformatter.date(from: dateString) else {
+        var date = dateformatter.date(from: dateString)
+        if date == nil {
+            dateformatter.dateFormat = "yyyy-MM-dd'T'HH:mm:sszzz"
+            date = dateformatter.date(from: dateString)
+        }
+        guard let date else {
             return nil
         }
 
