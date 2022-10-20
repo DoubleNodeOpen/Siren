@@ -37,6 +37,9 @@ public final class Siren: NSObject {
     /// skipping the update all together until another version is released.
     public lazy var rulesManager: RulesManager = .default
 
+    /// The Manual Install Website Url for an app.
+    public var manualUrl: URL?
+    
     /// The current installed version of your app.
     lazy var currentInstalledVersion: String? = Bundle.version()
 
@@ -107,6 +110,21 @@ public extension Siren {
     func launchAppStore() {
         guard let appID = appID,
             let url = URL(string: "https://itunes.apple.com/app/id\(appID)") else {
+                resultsHandler?(.failure(.malformedURL))
+                return
+        }
+
+        DispatchQueue.main.async {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+    }
+
+    /// Launches the AppStore in two situations when the user clicked the `Update` button in the UIAlertController modal.
+    ///
+    /// This function is marked `public` as a convenience for those developers who decide to build a custom alert modal
+    /// instead of using Siren's prebuilt update alert.
+    func launchManualUrl() {
+        guard let url = manualUrl else {
                 resultsHandler?(.failure(.malformedURL))
                 return
         }
@@ -272,6 +290,8 @@ private extension Siren {
         switch alertAction {
         case .appStore:
             launchAppStore()
+        case .manualUrl:
+            launchManualUrl()
         case .skip:
             guard let currentAppStoreVersion = currentAppStoreVersion else { return }
             UserDefaults.storedSkippedVersion = currentAppStoreVersion

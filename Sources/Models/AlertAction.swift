@@ -10,6 +10,8 @@ import Foundation
 
 /// The `UIAlertController` button that was pressed upon being presented an update alert.
 public enum AlertAction {
+    /// The user clicked on the `Update` option, which took them to the app's manual install page.
+    case manualUrl
     /// The user clicked on the `Update` option, which took them to the app's App Store page.
     case appStore
     /// The user clicked on the `Next Time` option, which dismissed the alert.

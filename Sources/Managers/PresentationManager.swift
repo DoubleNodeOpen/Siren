@@ -169,7 +169,11 @@ private extension PresentationManager {
 
         let action = UIAlertAction(title: title, style: .default) { _ in
             self.cleanUp()
-            handler?(.appStore, nil)
+            if Siren.shared.apiManager is APIManagerAppStoreUS {
+                handler?(.appStore, nil)
+            } else if Siren.shared.apiManager is APIManagerManifestUrl {
+                handler?(.manualUrl, nil)
+            }
             return
         }
 
